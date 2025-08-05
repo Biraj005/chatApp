@@ -1,0 +1,137 @@
+/* LoginPage.css */
+
+.login-page {
+  height: 100vh;
+  width: 100%;
+  background-image: url('/chatappbg.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 2px solid white;
+  padding: 30px 20px;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.05); /* frosted glass effect */
+  backdrop-filter: blur(6px);
+}
+
+.login-container h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-container input {
+  box-sizing: border-box;
+  padding: 10px 14px;
+  font-size: 1rem;
+  width: 100%;
+  border: none;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 10px 0;
+  outline: none;
+  border-radius: 20px;
+  transition: background-color 0.3s ease, border 0.2s ease;
+}
+
+.login-container input::placeholder {
+  color: #ccc;
+}
+
+.login-container input:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid #4caf50;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  user-select: none;
+}
+
+.checkbox-label input {
+  width: 18px;
+  height: 18px;
+}
+
+.login-container .submit-btn {
+  margin-top: 20px;
+  height: 40px;
+  width: 100%;
+  border-radius: 20px;
+  font-weight: 500;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.login-container .submit-btn:hover {
+  background-color: darkgreen;
+}
+
+.switch-login {
+  margin-top: 20px;
+  text-align: center;
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+.login-switch-button {
+  margin-left: 6px;
+  background: none;
+  border: none;
+  color: #4caf50;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.login-switch-button:hover {
+  color: #81c784;
+  text-decoration: none;
+}
+
+
+.file-input-wrapper {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.custom-file-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-label:hover {
+  background-color: darkgreen;
+}

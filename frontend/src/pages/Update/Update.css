@@ -1,0 +1,93 @@
+.update-page {
+  height: 100vh;
+  width: 100%;
+  background-image: url('/chatappbg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.update-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 2px solid white;
+  padding: 30px 20px;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+}
+
+.update-container h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.update-container input {
+  box-sizing: border-box;
+  padding: 10px 14px;
+  font-size: 1rem;
+  width: 100%;
+  border: none;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 10px 0;
+  outline: none;
+  border-radius: 20px;
+  transition: background-color 0.3s ease, border 0.2s ease;
+}
+
+.update-container input::placeholder {
+  color: #ccc;
+}
+
+.update-container input:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid #4caf50;
+}
+
+.file-input-wrapper {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.custom-file-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-label:hover {
+  background-color: darkgreen;
+}
+
+.submit-btn {
+  margin-top: 20px;
+  height: 40px;
+  width: 100%;
+  border-radius: 20px;
+  font-weight: 500;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: darkgreen;
+}

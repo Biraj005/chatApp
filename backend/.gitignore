@@ -1,0 +1,49 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional build or dist folders
+build/
+dist/
+
+# Coverage reports
+coverage/
+
+# IDE/editor config
+.vscode/
+.idea/
+
+# Test output
+*.test.ts.snap
+*.test.js.snap
+
+# PM2 logs (if you're using PM2)
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# MongoDB or database dump
+dump/
+*.sqlite
+
+# Uploads (if not using cloud like Cloudinary)
+uploads/
+
+# Misc
+*.tgz

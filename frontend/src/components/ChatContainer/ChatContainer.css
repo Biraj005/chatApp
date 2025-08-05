@@ -1,0 +1,159 @@
+.chat-container {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.search-box {
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+  color:white;
+  margin: 10px 0 15px 0;
+  outline: none;
+  border-radius: 20px;
+  line-height: 1.2;
+  transition: border-color 0.2s ease;
+  backdrop-filter: blur(19px);;
+}
+
+
+.search-box::placeholder {
+  color:white;
+  opacity: 1;
+}
+
+.user-list {
+  list-style: none;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  flex-grow: 1;
+  padding-right: 5px;
+}
+
+.user-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
+}
+
+.user-item {
+  padding: 8px 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+  height: 50px;
+  width: 90%;
+  margin-bottom: 5px;
+}
+
+.user-image {
+  height: 45px;
+  width: 45px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.user-item .name {
+  font-weight: 600;
+  color: white;
+}
+
+.chat-container h2 {
+  text-align: left;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 3px;
+  color: white;
+}
+
+.online {
+  font-size: 13px;
+  font-weight: 200;
+  color: white;
+
+}
+
+.active {
+  color: rgb(131, 197, 165);
+}
+.chat-top{
+    display: flex;
+    justify-content: space-between;
+}
+.three-dot{
+  cursor: pointer;
+}
+.Logout {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
+  width: 100px;
+  position: absolute;
+  right: 5px;
+  top: 50px;
+  border: 2px solid white;
+  border-radius: 4px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden; 
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.Logout.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.Logout hr {
+  height: 1px;
+  width: 80%;
+  background-color: white;
+  color: white;
+}
+
+.Logout .li {
+  color: white;
+  text-align: left;
+  margin: 5px 0px 5px;
+  font-size: 14px;
+  font-weight: 300;
+  cursor: pointer;
+}
+.user-item{
+  display: flex;
+}
+.selected{
+   backdrop-filter: blur(50px);
+   border-radius: 10px;
+   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.Logout .li a {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+
+.Logout .li:hover a {
+  color: #ccc; /* or whatever hover color you use */
+}

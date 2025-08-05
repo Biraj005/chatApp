@@ -1,0 +1,34 @@
+.home-page {
+  height: 100vh;
+  width: 100%;
+  background-image: url('/chatappbg.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-container{
+    height: 90vh;
+    width: 80%;
+    background:transparent;
+    backdrop-filter: blur(4px);
+    border: 1px solid white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+.home-container-left{
+    width:35%;
+    height: 100%;
+    backdrop-filter: blur(4px);
+    border-right: 2px solid white;
+}
+.home-container-right{
+    width: 65%;
+    height: 100%;
+    backdrop-filter: blur(4px);
+   
+
+}
