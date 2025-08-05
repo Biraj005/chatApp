@@ -5,7 +5,6 @@ import cors from 'cors';
 import UserRouter from './Routes/User.router.js';
 import { connectDb } from './Util/Db.js';
 import 'dotenv/config'
-import multer from 'multer';
 
 
 const app = express();
@@ -32,6 +31,7 @@ connectDb();
 
 app.use(cors());
 app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 app.use('/api', UserRouter);
 
 server.listen(PORT, () => {

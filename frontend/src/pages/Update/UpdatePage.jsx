@@ -10,15 +10,19 @@ function UpdatePage() {
   const [bio, setBio] = useState(currentUser?.bio || '');
   const [profilePic, setProfilePic] = useState(null);
   
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const updatedData = { name, bio };
-    console.log(updatedData);
-    if (profilePic) updatedData.profilePic = profilePic;
-      updateUser(updatedData);
-    
-  };
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('bio', bio);
+  if (profilePic) {
+    formData.append('profilePic', profilePic); 
+  }
+  console.log(formData);
+
+  updateUser(formData);
+};
 
   return (
     <div className="update-page">

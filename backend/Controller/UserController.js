@@ -1,26 +1,35 @@
+// Controller/UserController.js
+
 import User from "../Model/User.model.js";
 import { getToken } from "../Util/JwtUtil.js";
+import cloudinary from "../Util/cloudinary.js";
 import bcrypt from "bcryptjs";
-
+import fs from 'fs';
 
 export const Signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    console.log('signup controller ',name)
+    console.log('Signup controller', name);
 
     if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
+      return res.json({ success: false, message: "All fields are required" });
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ success: false, message: "User already exists" });
+      return res.json({ success: false, message: "User already exists" });
     }
 
+    let profilePicUrl;
+    if (req.file) {
+      console.log(req)
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "profile_pics",
+      });
+      profilePicUrl = result.secure_url;
+      fs.unlinkSync(req.file.path); // Delete temp file
+    }
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -28,10 +37,11 @@ export const Signup = async (req, res) => {
       email,
       password: hashedPassword,
       isOnline: true,
-      profilePic: profilePic || undefined, // Only assign if available
+      profilePic: profilePicUrl || undefined, 
     });
 
     await newUser.save();
+    console.log(newUser);
 
     const token = getToken(newUser._id);
 
@@ -49,16 +59,14 @@ export const Signup = async (req, res) => {
     });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
-
 
 export const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-     console.log('Lgin controller ',email)
-
+    console.log('Login controller', email);
 
     if (!email || !password) {
       return res.status(400).json({
@@ -96,21 +104,37 @@ export const Login = async (req, res) => {
       token,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.json({
       success: false,
       message: "Server error: " + error.message,
     });
   }
 };
+
 export const Update = async (req, res) => {
   try {
     const decoded = req.user;
-    const {userId} = decoded;
-    const { name, bio, profilePic } = req.body;
+    const { userId } = decoded;
+    const { name, bio } = req.body;
+
+    let profilePicUrl;
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "profile_pics",
+      });
+
+      profilePicUrl = result.secure_url;
+      fs.unlinkSync(req.file.path);
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, bio, profilePic },
+      {
+        name,
+        bio,
+        ...(profilePicUrl && { profilePic: profilePicUrl }),
+      },
       { new: true }
     ).select("-password");
 
@@ -127,7 +151,6 @@ export const Update = async (req, res) => {
 export const Logout = async (req, res) => {
   try {
     const { user } = req.body;
-    console.log(user._id);
     if (!user || !user._id) return res.json({ success: false });
 
     await User.findByIdAndUpdate(user._id, { isOnline: false });

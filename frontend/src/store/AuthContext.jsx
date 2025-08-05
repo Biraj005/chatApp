@@ -26,7 +26,18 @@ export const AuthProvider = ({ children }) => {
 
     const loginSignUp = async (type, form) => {
         try {
-            const response = await axios.post(`/api/user/${type}`, form);
+            let response;
+
+            if (type === "Login") {
+                response = await axios.post('/api/user/login', form);
+            } else {
+                response = await axios.post('/api/user/signup', form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            }
+
             if (response.data.success) {
                 const { user: userData, token: userToken } = response.data;
                 setUser(userData);
@@ -36,12 +47,14 @@ export const AuthProvider = ({ children }) => {
             } else {
                 toast.error(response.data.message);
             }
+
             return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || `Error during ${type}`);
             return error.response?.data;
         }
     };
+
 
     const logoutCleanup = () => {
         delete axios.defaults.headers.common['Authorization'];
@@ -63,17 +76,17 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const updateUser = async (updateData) => {
+    const updateUser = async (formData) => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.put('/api/user/update', updateData, {
+            const response = await axios.put('/api/user/update', formData, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                 },
             });
+            console.log(response);
 
-            console.log(response.data);
             if (response.data.success) {
                 setUser(response.data.user);
                 toast.success(response.data.message);
@@ -82,9 +95,11 @@ export const AuthProvider = ({ children }) => {
             return response.data;
         } catch (error) {
             console.log(error.message);
+            toast.error("Update failed");
             return error.response?.data;
         }
     };
+
 
     const value = {
         user,

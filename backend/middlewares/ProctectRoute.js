@@ -12,11 +12,9 @@ export const protectedRoute = async (req, res, next) => {
 
     try {
         const decoded = verifyToken(token);
-        console.log('verified token---------------',decoded);
         req.user = decoded; 
         next();
     } catch (error) {
-        console.log(error.message,'eroor-------------->')
         return res.json({ success: false, message: "Invalid or expired token" });
     }
 };

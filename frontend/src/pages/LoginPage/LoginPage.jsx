@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
 import './LoginPage.css';
 import {  AuthContext } from '../../store/AuthContext';
-import toast from 'react-hot-toast'; // Recommended for user feedback
+import toast from 'react-hot-toast'; 
 
 function LoginPage() {
-  const [login, setLogin] = useState(true); // Default to login mode
+  const [login, setLogin] = useState(true); 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
@@ -23,19 +23,20 @@ const onSubmitHandler = (event) => {
     toast.error("Passwords do not match!");
     return;
   }
+  if (login) {
+    loginSignUp(formType, { email, password });
+  } else {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("bio", bio);
+    if (profilePic) {
+      formData.append("profilePic", profilePic); 
+    }
 
-  const data = {
-    email,
-    password,
-  };
-
-  if (!login) {
-    data.name = name;
-    data.bio = bio;
+    loginSignUp(formType, formData);
   }
-  console.log(data);
-
-  loginSignUp(formType, data); 
 };
 
   const handleFileChange = (e) => {
