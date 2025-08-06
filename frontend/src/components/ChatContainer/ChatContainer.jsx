@@ -3,20 +3,32 @@ import './ChatContainer.css';
 import { StoreContext } from '../../store/StoreContext';
 import ListItem from '../ListItem';
 
-import { ChatContext } from '../../store/ChatContext';
+// import { ChatContext } from '../../store/Socket';
 import { AuthContext } from '../../store/AuthContext';
 import { Link, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function ChatContainer() {
-  const {Logout} = useContext(AuthContext);
+  const {Logout,getUsers} = useContext(AuthContext);
   const { users } = useContext(StoreContext);
   const [query, setQuery] = useState('');
+  
  
   const [isMenuVisible, setMenuVisible] = useState(false);
 
-  const filteredUsers = users.filter(user =>
+ let filteredUsers = [];
+
+if (users && Array.isArray(users)) {
+  filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(query.toLowerCase())
   );
+}
+
+  useEffect(()=>{
+
+     getUsers();
+
+  },[])
 
   return (
     <div className='chat-container'>
@@ -52,15 +64,12 @@ function ChatContainer() {
       />
 
       <ul className='user-list'>
-        {filteredUsers.length > 0 ? (
-          filteredUsers.map((user) => (
-            <li className='user-item ' key={user.id} >
-              <ListItem key={user.id} user={user} />
-            </li>
-          ))
-        ) : (
-          <li className='user-item'>No user found</li>
-        )}
+       {filteredUsers.map((user) => (
+        <li className='user-item ' key={user._id} >
+          <ListItem key={user._id} user={user} />
+        </li>
+      ))}
+
       </ul>
     </div>
   );

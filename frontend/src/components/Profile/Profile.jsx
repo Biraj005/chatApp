@@ -8,9 +8,9 @@ function Profile() {
   return (
     <div className='sender-profile'>
       <div className="top-profile">
-        <img src={selectedUser.img} alt="" />
+        <img src={selectedUser.profilePic} alt="" />
         <p>{selectedUser.name}</p>
-        <span className="about">{selectedUser.about}</span>
+        <span className="about">{selectedUser.bio}</span>
 
       </div>
 

@@ -1,15 +1,13 @@
-// Controller/UserController.js
-
 import User from "../Model/User.model.js";
 import { getToken } from "../Util/JwtUtil.js";
 import cloudinary from "../Util/cloudinary.js";
 import bcrypt from "bcryptjs";
-import fs from 'fs';
+import fs from "fs";
 
 export const Signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    console.log('Signup controller', name);
+    console.log("Signup controller", name);
 
     if (!name || !email || !password) {
       return res.json({ success: false, message: "All fields are required" });
@@ -22,14 +20,14 @@ export const Signup = async (req, res) => {
 
     let profilePicUrl;
     if (req.file) {
-      console.log(req)
+      console.log(req);
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pics",
       });
       profilePicUrl = result.secure_url;
       fs.unlinkSync(req.file.path); // Delete temp file
     }
-    
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -37,7 +35,7 @@ export const Signup = async (req, res) => {
       email,
       password: hashedPassword,
       isOnline: true,
-      profilePic: profilePicUrl || undefined, 
+      profilePic: profilePicUrl || undefined,
     });
 
     await newUser.save();
@@ -66,7 +64,7 @@ export const Signup = async (req, res) => {
 export const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log('Login controller', email);
+    console.log("Login controller", email);
 
     if (!email || !password) {
       return res.status(400).json({
@@ -158,5 +156,14 @@ export const Logout = async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false });
+  }
+};
+
+export const getUser = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json({ success: true, message: "Users is found", users });
+  } catch (error) {
+    res.json({ success: false, message: err.message });
   }
 };

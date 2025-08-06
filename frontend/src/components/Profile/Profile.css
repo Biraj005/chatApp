@@ -1,13 +1,14 @@
-
-.top-profile img{
-    height: 120px;
-    border-radius: 50%;
+.top-profile img {
+  width: 120px;             
+  aspect-ratio: 1 / 1;   
+  object-fit: cover;       
+  border-radius: 50%;        
 }
+
 .top-profile{
     margin-top: 40px;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
     justify-content: space-between;
     border-bottom: 2px solid white;

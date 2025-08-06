@@ -17,11 +17,32 @@ const io = new Server(server, {
   }
 });
 
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+const users = new Map(); 
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("join", (userId) => {
+    users.set(userId, socket.id);
+    console.log(`User ${userId} mapped to socket ${socket.id}`);
+  });
+
+  socket.on("private-message", ({ to, from, text }) => {
+    const receiverSocketId = users.get(to);
+    if (receiverSocketId) {
+      io.broadcast("private-message", { from, text ,to});
+    }
+  });
+
+  socket.on("disconnect", () => {
+    for (const [userId, sId] of users.entries()) {
+      if (sId === socket.id) {
+        users.delete(userId);
+        break;
+      }
+    }
+    console.log("Disconnected:", socket.id);
   });
 });
 

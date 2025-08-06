@@ -12,7 +12,7 @@ import { AuthContext } from "./store/AuthContext";
 function App() {
 
   const {userLoggedIn} = useContext(AuthContext);
-  console.log(userLoggedIn);
+
 
   return (
     <div>
