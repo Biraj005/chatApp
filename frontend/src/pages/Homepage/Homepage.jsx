@@ -1,19 +1,33 @@
-import { useContext, useEffect } from 'react';
+// src/pages/Homepage.jsx
+import { useSocket } from '../../store/Socket';
 import ChatContainer from '../../components/ChatContainer/ChatContainer';
 import Right from '../../components/Right/Right';
 import './Homepage.css';
-import { StoreContext } from '../../store/StoreContext';
-import { SocketContext } from '../../store/Socket'; // Make sure SocketContext is exported correctly
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../store/AuthContext';
+import { io } from 'socket.io-client';
 
 function Homepage() {
-  const { userId } = useContext(StoreContext);
-  const socket = useContext(SocketContext); // Directly use socket, not `{ socket }`
+  const socket = useSocket(); 
+  const { userId } = useContext(AuthContext);
 
   useEffect(() => {
-    if (socket && userId) {
-      socket.current.emit("join", userId);
+    if (userId && !socket.current) {
+      socket.current = io("http://localhost:3000");
+
+      socket.current.on("connect", () => {
+        console.log("Connected to socket:", socket.current.id);
+        socket.current.emit("join", userId);
+      });
     }
-  }, [socket, userId]); // ⬅️ Dependencies are IMPORTANT!
+
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+        socket.current = null;
+      }
+    };
+  }, [userId]);
 
   return (
     <div className='home-page'>

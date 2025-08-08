@@ -161,9 +161,11 @@ export const Logout = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
-    res.json({ success: true, message: "Users is found", users });
+    const { userId } = req.user; 
+
+    const users = await User.find({ _id: { $ne: userId } }).select("-password"); 
+    res.json({ success: true, message: "Users found", users });
   } catch (error) {
-    res.json({ success: false, message: err.message });
+    res.json({ success: false, message: error.message });
   }
 };
