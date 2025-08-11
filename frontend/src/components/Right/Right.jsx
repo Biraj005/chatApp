@@ -7,8 +7,9 @@ import ChatBox from '../../Message/ChatBox'
 
 
 function Right() {
-
+    
     const { selectedUser, setSelectedUser } = useContext(StoreContext);
+
     return (
         <div className='right-side'>
             {selectedUser === 'none' ?
@@ -20,7 +21,7 @@ function Right() {
                 <div className='user-selcted'>
                     <ChatBox user={selectedUser} />
                     <Profile className='sender-profile' />
-                </div>
+             </div>
             }
         </div>
     )

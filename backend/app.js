@@ -5,6 +5,7 @@ import cors from 'cors';
 import UserRouter from './Routes/User.router.js';
 import { connectDb } from './Util/Db.js';
 import 'dotenv/config';
+import MessageRoute from './Routes/Message.route.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -16,19 +17,13 @@ const io = new Server(server, {
     methods: ['GET', 'POST']
   }
 });
-
 const users = new Map(); 
-
-
 io.on('connection', (socket) => {
   console.log(' User connected:', socket.id);
-
   socket.on('join', (userId) => {
     users.set(userId, socket.id);
     console.log(` User ${userId} mapped to socket ${socket.id}`);
   });
-
- 
   socket.on('send-message', (content) => {
     console.log(' Message received:', content);
 
@@ -46,15 +41,12 @@ io.on('connection', (socket) => {
       console.log(` User ${content.to} not online`);
     }
   });
-
-
   socket.on('private-message', ({ to, from, text }) => {
     const receiverSocketId = users.get(to);
     if (receiverSocketId) {
       io.to(receiverSocketId).emit('private-message', { from, text, to });
     }
   });
-
   socket.on('disconnect', () => {
     for (const [userId, sId] of users.entries()) {
       if (sId === socket.id) {
@@ -68,11 +60,11 @@ io.on('connection', (socket) => {
 
 
 connectDb();
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', UserRouter);
+app.use('/api',MessageRoute);
 
 
 server.listen(PORT, () => {

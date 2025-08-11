@@ -20,12 +20,11 @@ export const Signup = async (req, res) => {
 
     let profilePicUrl;
     if (req.file) {
-      console.log(req);
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pics",
       });
       profilePicUrl = result.secure_url;
-      fs.unlinkSync(req.file.path); // Delete temp file
+      fs.unlinkSync(req.file.path); 
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -118,10 +117,9 @@ export const Update = async (req, res) => {
     let profilePicUrl;
 
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
+       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pics",
       });
-
       profilePicUrl = result.secure_url;
       fs.unlinkSync(req.file.path);
     }

@@ -6,7 +6,6 @@ export const protectedRoute = async (req, res, next) => {
         return res.json({ success: false, message: "Token missing or malformed" });
     }
 
-
     const token = authHeader.split(" ")[1];
 
 

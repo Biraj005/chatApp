@@ -4,23 +4,44 @@ import { useSocket } from '../store/Socket';
 import { AuthContext } from '../store/AuthContext';
 
 function ChatBox({ user }) {
+
+  const { getMessages, sendMessages } = useContext(AuthContext);
   const socket = useSocket();
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
+  const [image, setImage] = useState(null);
   const { userId } = useContext(AuthContext);
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversation]);
+    const init = async () => {
+      if (!userId || !user?._id) return;
+
+      const data = await getMessages(userId, user._id);
+      if (data?.success && data.messages) {
+        setConversation(
+          data.messages.map(msg => ({
+            text: msg.text,
+            image: msg.image || null, // assuming backend sends image url if any
+            id: msg.from,
+            timestamp: new Date(msg.createdAt).toLocaleTimeString()
+          }))
+        );
+      } else {
+        setConversation([]);
+      }
+    };
+
+    init();
+  }, [user, userId, getMessages]);
 
   useEffect(() => {
     if (!socket.current) return;
 
     const handleIncomingMessage = (data) => {
-      console.log('receive-message', data);
       setConversation(prev => [...prev, {
         text: data.text,
+        image: data.image || null,
         id: data.from,
         timestamp: new Date().toLocaleTimeString()
       }]);
@@ -35,31 +56,42 @@ function ChatBox({ user }) {
     };
   }, [socket, user._id]);
 
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim() === '') return;
 
+    // Don't send if both message and image are empty
+    if (!message.trim() && !image) return;
+
+    const formData = new FormData();
+    formData.append("from", userId);
+    formData.append("to", user._id);
+    formData.append("text", message || "");
+    if (image) formData.append("image", image);
+
+    const timestamp = new Date().toLocaleTimeString();
     const payload = {
       to: user._id,
       from: userId,
       text: message,
-      timestamp: new Date().toLocaleTimeString()
+      image: image ? URL.createObjectURL(image) : null,
+      timestamp
     };
 
-  
     setConversation(prev => [...prev, {
       text: message,
+      image: image ? URL.createObjectURL(image) : null,
       id: userId,
-      timestamp: payload.timestamp
+      timestamp
     }]);
 
- 
     if (socket.current) {
       socket.current.emit('send-message', payload);
     }
 
+    await sendMessages(formData);
+
     setMessage('');
+    setImage(null);
   };
 
   return (
@@ -79,7 +111,8 @@ function ChatBox({ user }) {
             className={`message ${item.id === userId ? 'user' : 'sender'}`}
           >
             <div className="messages">
-              <p>{item.text}</p>
+              {item.text && <p>{item.text}</p>}
+              {item.image && <img src={item.image} alt="attachment" className="chat-image" />}
               <span className="timestamp">{item.timestamp}</span>
             </div>
           </li>
@@ -104,6 +137,7 @@ function ChatBox({ user }) {
             className='media'
             type="file"
             style={{ display: 'none' }}
+            onChange={(e) => setImage(e.target.files[0])}
           />
         </div>
         <div className="send">
