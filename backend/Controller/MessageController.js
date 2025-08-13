@@ -6,7 +6,6 @@ import fs from 'fs'
 export const getMessages = async (req, res) => {
   try {
     const { from, to } = req.query; 
-    console.log('Query:', req.query.to,req.query.from);
 
     const conversation = await conversationModel.findOne({
       participants: { $all: [from, to] },
@@ -19,8 +18,8 @@ export const getMessages = async (req, res) => {
     const messages = await messageModel
       .find({ conversationId: conversation._id })
       .sort({ createdAt: 1 });
-
-    res.json({ success: true, messages });
+       const filterdMessages = messages.filter(item => item.text ||item.attachments )
+      res.json({ success: true,messages: filterdMessages });
 
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -29,11 +28,8 @@ export const getMessages = async (req, res) => {
 
 export const sendMessages = async (req, res) => {
   try {
-    const { from, to, content } = req.body;
-    console.log(content);
-
-    return req.json({success:true})
-
+    const { from, to, text } = req.body;
+    console.log(from, to, text);
 
     let conversation = await conversationModel.findOne({
       participants: { $all: [from, to] },
@@ -45,34 +41,30 @@ export const sendMessages = async (req, res) => {
       });
     }
 
-    let attachmentsUrl;
-
-
+    let attachmentsUrl = null;
     if (req.file) {
+      console.log("Uploading file to Cloudinary...");
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "chat_files",
       });
-      attachmentsUrl =result.secure_url;
-      fs.unlinkSync(req.file.path); 
+      attachmentsUrl = result.secure_url;
+      fs.unlinkSync(req.file.path);
     }
 
-    
     const newMessage = new messageModel({
       conversationId: conversation._id,
       sender: from,
-      text: content?.text || "",
+      text: text || "",
       attachments: attachmentsUrl,
       seen: false,
+      id: from,
     });
 
-    
     await newMessage.save();
 
-
     res.json({ success: true, message: newMessage });
-
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };

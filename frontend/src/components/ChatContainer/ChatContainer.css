@@ -17,18 +17,17 @@
   font-size: 1.2rem;
   background: transparent;
   border: none;
-  color:white;
+  color: white;
   margin: 10px 0 15px 0;
   outline: none;
   border-radius: 20px;
   line-height: 1.2;
   transition: border-color 0.2s ease;
-  backdrop-filter: blur(19px);;
+  backdrop-filter: blur(19px);
 }
 
-
 .search-box::placeholder {
-  color:white;
+  color: white;
   opacity: 1;
 }
 
@@ -87,19 +86,21 @@
   font-size: 13px;
   font-weight: 200;
   color: white;
-
 }
 
 .active {
   color: rgb(131, 197, 165);
 }
-.chat-top{
-    display: flex;
-    justify-content: space-between;
+
+.chat-top {
+  display: flex;
+  justify-content: space-between;
 }
-.three-dot{
+
+.three-dot {
   cursor: pointer;
 }
+
 .Logout {
   padding-bottom: 10px;
   padding-top: 10px;
@@ -113,11 +114,12 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  visibility: hidden; 
+  visibility: hidden;
   z-index: 2;
   opacity: 0;
   transition: opacity 0.2s ease, visibility 0.2s ease;
 }
+
 .Logout.active {
   visibility: visible;
   opacity: 1;
@@ -138,14 +140,6 @@
   font-weight: 300;
   cursor: pointer;
 }
-.user-item{
-  display: flex;
-}
-.selected{
-   backdrop-filter: blur(50px);
-   border-radius: 10px;
-   background-color: rgba(255, 255, 255, 0.1);
-}
 
 .Logout .li a {
   color: inherit;
@@ -154,6 +148,10 @@
   width: 100%;
 }
 
-.Logout .li:hover a {
-  color: #ccc; /* or whatever hover color you use */
+.Logout .li:hover a,
+.Logout .li:hover {
+  color: #ccc;
 }
+
+/* Removed the unused ".selected" class from the end of the file.
+*/

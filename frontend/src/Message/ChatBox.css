@@ -13,6 +13,7 @@
   border-right: 1px solid #333;
 }
 
+
 .top {
   padding: 10px 20px;
   display: flex;
@@ -35,6 +36,12 @@
   font-weight: 500;
 }
 
+.name .top-online{
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+}
+
 /* Message list layout */
 .message-list {
   flex: 1;
@@ -45,7 +52,34 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transform: translateZ(0); 
+  will-change: transform;
 }
+
+/* --- Added Loading Spinner Styles --- */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #007aff; /* Match user message color */
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* --- End of Loading Spinner Styles --- */
+
 
 /* Common message item */
 .message-list li {
@@ -94,31 +128,45 @@
   margin-top: 4px;
 }
 
+/* Chat images inside messages */
+.chat-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-top: 5px;
+  object-fit: cover;
+  display: block;
+}
+
+.message-list li.user .chat-image,
+.message-list li.sender .chat-image {
+  max-height: 200px; 
+  width: auto;
+}
+
 /* Input bar */
 .send-message {
   width: 100%;
-  height: 40px;
+  height: auto;
+  min-height: 50px;
   display: flex;
   background-color: #2a2a2a;
-  padding: 5px;
+  padding: 10px;
+  align-items: center;
 }
 
 .type {
   height: 100%;
-  width: 80%;
+  flex: 1;
   background-color: #3a3a3c;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   border-radius: 20px;
-  padding: 0 10px;
+  padding: 5px 15px;
 }
 
 .text {
-  width: 90%;
-  height: 80%;
-  margin-left: 5px;
-  margin-right: 10px;
+  flex: 1;
   background: transparent;
   border: none;
   outline: none;
@@ -127,12 +175,10 @@
 }
 
 .file-input-label {
-  width: 20%;
   color: #a0a0a0;
-  text-align: center;
-  font-size: 0.9rem;
   cursor: pointer;
   transition: color 0.2s ease;
+  margin-left: 10px;
 }
 
 .file-input-label:hover {
@@ -143,29 +189,25 @@
 .send {
   display: flex;
   justify-content: center;
-  width: 20%;
   align-items: center;
+  margin-left: 10px;
 }
 
 .send button {
-  height: 80%;
-  width: 90%;
   background-color: #007aff;
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 50%;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .send button:hover {
   background-color: #0056b3;
-}
-.message-list {
-  transform: translateZ(0); 
-  will-change: transform;
-}
-.name .top-online{
-  font-size: 0.5rem;
 }

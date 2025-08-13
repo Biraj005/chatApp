@@ -19,16 +19,16 @@ const io = new Server(server, {
 });
 const users = new Map(); 
 io.on('connection', (socket) => {
-  console.log(' User connected:', socket.id);
+//  console.log(' User connected:', socket.id);
   socket.on('join', (userId) => {
     users.set(userId, socket.id);
-    console.log(` User ${userId} mapped to socket ${socket.id}`);
+   // console.log(` User ${userId} mapped to socket ${socket.id}`);
   });
   socket.on('send-message', (content) => {
-    console.log(' Message received:', content);
+    // console.log(' Message received:', content);
 
     const receiverSocketId = users.get(content.to);
-    console.log(receiverSocketId);
+    // console.log(receiverSocketId);
 
     if (receiverSocketId) {
       io.to(receiverSocketId).emit('receive-message', {
@@ -36,9 +36,9 @@ io.on('connection', (socket) => {
         to: content.to,
         text: content.text,
       });
-      console.log(` Forwarded message to ${content.to}`);
+      // console.log(` Forwarded message to ${content.to}`);
     } else {
-      console.log(` User ${content.to} not online`);
+      // console.log(` User ${content.to} not online`);
     }
   });
   socket.on('private-message', ({ to, from, text }) => {

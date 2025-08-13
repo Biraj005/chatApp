@@ -17,6 +17,11 @@ const messageSchema = new mongoose.Schema(
     attachments: {
       type:String
     }, 
+    id:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"User",
+      required:true,
+    }
   },
   { timestamps: true }
 );

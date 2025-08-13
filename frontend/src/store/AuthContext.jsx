@@ -130,64 +130,54 @@ export const AuthProvider = ({ children }) => {
       return error.response?.data;
     }
   };
-   const getMessages = async (from, to) => {
+  const getMessages = async (from, to) => {
     try {
-        console.log(from,to)
-        const response = await axios.get("/api/message/getmessages", {
+      console.log(from, to)
+      const response = await axios.get("/api/message/getmessages", {
         params: {
-        from: from,
-        to: to,
+          from: from,
+          to: to,
         },
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        });
-
-        if (response.data.success) {
-        return response.data;
-        } else {
-        toast.error(response.data.message || "Failed to fetch messages");
-        return null;
-        }
-    } catch (error) {
-        toast.error("Error while fetching messages");
-        console.error(error.message);
-        return [];
-    }
-};
-  const sendMessages = async (data) => {
- 
-  
-  return;
-
-  try {
-    const response = await axios.post(
-      "/api/message/send",
-      { from, to, content:{
-          content
-      } }, 
-      {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
         },
-      }
-    );
+      });
 
-    if (response.data.success) {
-      toast.success("Message sent");
-      return response.data;
-    } else {
-      toast.error(response.data.message || "Failed to send message");
+      if (response.data.success) {
+        return response.data;
+      } else {
+        toast.error(response.data.message || "Failed to fetch messages");
+        return null;
+      }
+    } catch (error) {
+      toast.error("Error while fetching messages");
+      console.error(error.message);
+      return [];
+    }
+  };
+  const sendMessages = async (data) => {
+    console.log(data)
+    try {
+      const response = await axios.post("/api/message/send", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.success) {
+        toast.success("Message sent");
+        return response.data;
+      } else {
+        toast.error(response.data.message || "Failed to send message");
+        return null;
+      }
+    } catch (error) {
+      toast.error("Error while sending message");
+      console.error(error.message);
       return null;
     }
-  } catch (error) {
-    toast.error("Error while sending message");
-    console.error(error.message);
-    return null;
-  }
-};
-const value = {
+  };
+  const value = {
     user,
     token,
     userLoggedIn,

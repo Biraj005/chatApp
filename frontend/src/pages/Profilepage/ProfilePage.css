@@ -1,0 +1,124 @@
+* {
+  box-sizing: border-box;
+}
+
+.profile-page {
+  height: 100vh;
+  width: 100%;
+  background-image: url('/chatappbg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ 
+}
+
+.profile-box {
+  width: 400px;
+  background: transparent;
+  backdrop-filter: blur(4px);
+  border: 1px solid white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 3px solid white;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.profile-name {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.profile-email {
+  color: #ddd;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.status {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.online {
+  color: #4caf50;
+}
+
+.offline {
+  color: #f44336;
+}
+
+.bio-box {
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 16px;
+  font-style: italic;
+  color: #eee;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  backdrop-filter: blur(6px);
+}
+
+/* --- Added Button Styles --- */
+.update-button {
+  margin-top: 20px;
+  padding: 10px 25px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+/* --- End of Added Styles --- */
+
+.profile-container {
+  width: 350px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-align: center;
+  color: white;
+}
+
+.profile-container img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid white;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.profile-container h2 {
+  margin: 5px 0;
+}
+
+.profile-container p {
+  font-size: 14px;
+  opacity: 0.8;
+}
