@@ -8,6 +8,7 @@ import { StoreContext } from "./store/StoreContext";
 import UpdatePage from "./pages/Update/UpdatePage";
 
 import { AuthContext } from "./store/AuthContext";
+import ForgetPassword from "./pages/Resetpassword/ForgetPassword";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/login" element={<LoginPage /> } />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/update" element={userLoggedIn ?<UpdatePage />:<Navigate to='/Login'/>} />
+        <Route path="/forgotpassword" element={<ForgetPassword/>}/>
         <Route path="*" element={<Navigate to={"/"} />} />
       </Routes>
     </div>

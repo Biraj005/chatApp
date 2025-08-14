@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -33,6 +34,14 @@ const UserSchema = new mongoose.Schema(
     isOnline: {
       type: Boolean,
       default: false,
+    },
+    resetOtp: {
+      type: String,
+      default: null,
+    },
+    resetOtpExpiry: {
+      type: Date,
+      default: null,
     },
   },
 

@@ -1,7 +1,9 @@
+import crypto from "crypto";
 import User from "../Model/User.model.js";
 import { getToken } from "../Util/JwtUtil.js";
 import cloudinary from "../Util/cloudinary.js";
 import bcrypt from "bcryptjs";
+import transporter from "../Util/Nodmailer.js";
 import fs from "fs";
 
 export const Signup = async (req, res) => {
@@ -24,7 +26,7 @@ export const Signup = async (req, res) => {
         folder: "profile_pics",
       });
       profilePicUrl = result.secure_url;
-      fs.unlinkSync(req.file.path); 
+      fs.unlinkSync(req.file.path);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -117,7 +119,7 @@ export const Update = async (req, res) => {
     let profilePicUrl;
 
     if (req.file) {
-       const result = await cloudinary.uploader.upload(req.file.path, {
+      const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pics",
       });
       profilePicUrl = result.secure_url;
@@ -159,10 +161,80 @@ export const Logout = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const { userId } = req.user; 
+    const { userId } = req.user;
 
-    const users = await User.find({ _id: { $ne: userId } }).select("-password"); 
+    const users = await User.find({ _id: { $ne: userId } }).select("-password");
     res.json({ success: true, message: "Users found", users });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+export const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+  console.log(email);
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.json({ success: false, message: "No uer found " });
+  }
+  const otp = crypto.randomInt(100000, 999999).toString();
+  const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+  user.resetOtp = hashedOtp;
+  user.resetOtpExpiry = Date.now() + 5 * 60 * 1000;
+  await user.save();
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Password Reset OTP",
+    text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+  });
+  res.json({ success: true, message: "OTP sent successfully" });
+};
+
+export const verifyotp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+      if (user.resetOtp !== hashedOtp) {
+      return res.json({ success: false, message: "Wrong OTP" });
+    }
+
+   if (user.resetOtpExpiry && user.resetOtpExpiry < Date.now()) {
+      return res.json({ success: false, message: "OTP expired" });
+    }
+
+      user.resetOtpExpiry = null;
+      await user.save();
+
+      return res.json({ success: true, message: "OTP verified successfully" });
+
+
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { password, email } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, message: "Password is updated" });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }

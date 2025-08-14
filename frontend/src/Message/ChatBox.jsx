@@ -58,22 +58,33 @@ function ChatBox({ user }) {
     };
   }, [socket]);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim() && !image) return;
+
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const tempImageURL = image ? URL.createObjectURL(image) : null;
+
     setConversation(prev => [...prev, {
       text: message,
       image: tempImageURL,
       id: userId,
       timestamp
     }]);
+
     const formData = new FormData();
     formData.append("from", userId);
     formData.append("to", user._id);
     formData.append("text", message || "");
     if (image) formData.append("image", image);
+
     if (socket.current) {
       socket.current.emit('send-message', {
         to: user._id,
@@ -82,6 +93,7 @@ function ChatBox({ user }) {
         image: null
       });
     }
+
     await sendMessages(formData);
     setMessage('');
     setImage(null);
@@ -97,9 +109,10 @@ function ChatBox({ user }) {
         <img src={user.profilePic || "/Chatrix.png"} alt="User" />
         <div className="name">
           <h2>{user.name}</h2>
-          <p className='top-online'>{user.isOnline ? "online" : "offline"}</p>
+          <p className={`top-online ${user.isOnline ? "online" : ""}`}>{user.isOnline ? "online" : "offline"}</p>
         </div>
       </div>
+
       <ul className='message-list'>
         {isLoading ? (
           <div className="loading-container">
@@ -123,6 +136,15 @@ function ChatBox({ user }) {
           </>
         )}
       </ul>
+
+      {/* Image Preview before sending */}
+      {image && (
+        <div className="image-preview">
+          <img src={URL.createObjectURL(image)} alt="preview" />
+          <button onClick={() => setImage(null)}>✕</button>
+        </div>
+      )}
+
       <form className='send-message' onSubmit={handleSubmit}>
         <div className="type">
           <input
@@ -138,15 +160,14 @@ function ChatBox({ user }) {
           </label>
           <input
             id="file-input"
-            className='media'
             type="file"
             accept="image/*"
             style={{ display: 'none' }}
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={handleImageChange}
           />
         </div>
         <div className="send">
-          <button type="submit">Send</button>
+          <button type="submit">➤</button>
         </div>
       </form>
     </div>

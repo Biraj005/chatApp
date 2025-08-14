@@ -52,10 +52,8 @@ function ChatContainer() {
           <li className="li">
             <Link to="/profile">Profile</Link>
           </li>
-          <hr />
-          <li className="li">
-            <Link to="/Update">Edit Profile</Link>
-          </li>
+         
+         
 
         </ul>
       </div>
