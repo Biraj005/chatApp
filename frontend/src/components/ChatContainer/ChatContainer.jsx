@@ -1,36 +1,27 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import './ChatContainer.css';
 import { StoreContext } from '../../store/StoreContext';
 import ListItem from '../ListItem';
 import { AuthContext } from '../../store/AuthContext';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function ChatContainer() {
   const { Logout, getUsers } = useContext(AuthContext);
   const { users } = useContext(StoreContext);
   const [query, setQuery] = useState('');
-  const navigate = useNavigate()
-
-
   const [isMenuVisible, setMenuVisible] = useState(false);
 
-  let filteredUsers = [];
-
-  if (users && Array.isArray(users)) {
-    filteredUsers = users.filter(user =>
-      user.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }
-
   useEffect(() => {
-
     getUsers();
+  }, []);
 
-  }, [])
+  const filteredUsers = users?.filter(user =>
+    user.name.toLowerCase().includes(query.toLowerCase())
+  ) || [];
 
   return (
     <div className='chat-container'>
+      {/* Top bar */}
       <div className="chat-top">
         <h2>Chatrix</h2>
         <svg
@@ -40,24 +31,20 @@ function ChatContainer() {
           height="24px"
           viewBox="0 -960 960 960"
           width="24px"
-          fill="#ffff">
+          fill="#fff">
           <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z" />
         </svg>
 
         <ul className={`Logout ${isMenuVisible ? 'active' : ''}`}>
-
-
-          <li className='li' onClick={() => Logout()}>Logout</li>
+          <li className='li' onClick={Logout}>Logout</li>
           <hr />
           <li className="li">
             <Link to="/profile">Profile</Link>
           </li>
-         
-         
-
         </ul>
       </div>
 
+      {/* Search input */}
       <input
         type="text"
         className='search-box'
@@ -66,13 +53,11 @@ function ChatContainer() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
+      {/* User list */}
       <ul className='user-list'>
-        {filteredUsers.map((user) => (
-          <li className='user-item ' key={user._id} >
-            <ListItem key={user._id} user={user} />
-          </li>
+        {filteredUsers.map(user => (
+          <ListItem key={user._id} user={user} /> // let ListItem handle its own <li>
         ))}
-
       </ul>
     </div>
   );

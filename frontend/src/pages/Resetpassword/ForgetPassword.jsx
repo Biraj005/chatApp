@@ -6,14 +6,14 @@ import { useNavigate } from 'react-router-dom';
 
 function ForgetPassword() {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword,setConfirmPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const { getOtp ,verifyOtp,otpVerified,Resetpassword,setOtpverified} = useContext(AuthContext);
+    const { getOtp, verifyOtp, otpVerified, Resetpassword, setOtpverified } = useContext(AuthContext);
 
     const handleNext = async (e) => {
         e.preventDefault();
@@ -23,53 +23,44 @@ function ForgetPassword() {
             if (res) {
                 toast.success("OTP is sent to your email");
                 setStep(2);
-                
             }
         }
         else if (step === 2) {
-            
-            const response = await verifyOtp(email,otp);
-            if(response){
+            const response = await verifyOtp(email, otp);
+            if (response) {
                 toast.success("Otp is verified");
-                setStep(step+1);
+                setStep(step + 1);
             }
-
         }
         else if (step === 3 && otpVerified) {
-
-            if(newPassword!==confirmPassword){
+            if (newPassword !== confirmPassword) {
                 toast.error("Confirm password should be same");
-                return ;
+                return;
             }
-            if(newPassword.length < 8){
-                toast.error("Password lenght should be minimum 8 ");
-                return ;
+            if (newPassword.length < 8) {
+                toast.error("Password length should be minimum 8 ");
+                return;
             }
 
-            const response = await Resetpassword(newPassword,email);
+            const response = await Resetpassword(newPassword, email);
 
-            if(response){
-
+            if (response) {
                 toast.success("Password is updated");
-                navigate("/login")
-                
-                
-
-            }else{
+                navigate("/login");
+            } else {
                 toast.error("Password is not updated");
             }
             setOtpverified(false);
-
-            
         }
     };
+
     return (
-        <div className="home-page">
-            <div className="home-container forget-container">
-                <form className="forget-form" onSubmit={handleNext}>
+        <div className="forget-bg">
+            <div className="forget-wrapper">
+                <form className="forget-box" onSubmit={handleNext}>
                     {step === 1 && (
                         <>
-                            <h2>Forgot Password</h2>
+                            <h2 className="forget-title">Forgot Password</h2>
                             <input
                                 type="email"
                                 placeholder="Enter your email"
@@ -83,7 +74,7 @@ function ForgetPassword() {
 
                     {step === 2 && (
                         <>
-                            <h2>Enter OTP</h2>
+                            <h2 className="forget-title">Enter OTP</h2>
                             <input
                                 type="text"
                                 placeholder="Enter OTP"
@@ -97,7 +88,7 @@ function ForgetPassword() {
 
                     {step === 3 && (
                         <>
-                            <h2>Set New Password</h2>
+                            <h2 className="forget-title">Set New Password</h2>
                             <input
                                 type="password"
                                 placeholder="Enter new password"

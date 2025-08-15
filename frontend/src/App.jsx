@@ -4,7 +4,6 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import ProfilePage from "./pages/Profilepage/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { useContext } from "react";
-import { StoreContext } from "./store/StoreContext";
 import UpdatePage from "./pages/Update/UpdatePage";
 
 import { AuthContext } from "./store/AuthContext";
