@@ -75,12 +75,21 @@ const onSubmitHandler = (event) => {
         
         <button className="submit-btn" type="submit">{login ? 'Login' : 'Signup'}</button>
         
-        <div className="switch-login">
-          <p>{login ? "Don't have an account?" : "Already have an account?"}</p>
-          <button onClick={() => setLogin(prev => !prev)} type="button" className="login-switch-button">
-            {login ? 'Signup here' : 'Login here'}
-          </button>
-        </div>
+    <div className="switch-login">
+        <p>{login ? "Don't have an account?" : "Already have an account?"}</p>
+        <button 
+          onClick={() => setLogin(prev => !prev)} 
+          type="button" 
+          className="text-btn"
+        >
+          {login ? 'Signup here' : 'Login here'}
+        </button>
+        {login && ( <button type="button" className="text-btn">
+          Forgot password?
+        </button>)}
+      </div>
+
+
       </form>
     </div>
   );

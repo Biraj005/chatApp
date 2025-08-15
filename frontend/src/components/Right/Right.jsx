@@ -3,13 +3,9 @@ import './Right.css'
 import { StoreContext } from '../../store/StoreContext'
 import Profile from '../Profile/Profile';
 import ChatBox from '../../Message/ChatBox'
-
-
-
 function Right() {
     
     const { selectedUser, setSelectedUser } = useContext(StoreContext);
-
     return (
         <div className='right-side'>
             {selectedUser === 'none' ?

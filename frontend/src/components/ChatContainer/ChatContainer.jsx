@@ -21,7 +21,6 @@ function ChatContainer() {
 
   return (
     <div className='chat-container'>
-      {/* Top bar */}
       <div className="chat-top">
         <h2>Chatrix</h2>
         <svg
@@ -44,7 +43,7 @@ function ChatContainer() {
         </ul>
       </div>
 
-      {/* Search input */}
+
       <input
         type="text"
         className='search-box'
@@ -52,11 +51,9 @@ function ChatContainer() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-
-      {/* User list */}
       <ul className='user-list'>
         {filteredUsers.map(user => (
-          <ListItem key={user._id} user={user} /> // let ListItem handle its own <li>
+          <ListItem key={user._id} user={user} />
         ))}
       </ul>
     </div>

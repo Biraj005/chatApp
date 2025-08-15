@@ -11,7 +11,7 @@ axios.defaults.baseURL = backend_url;
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
-  const { setUsers } = useContext(StoreContext);
+  const { setUsers, setUserMedia, selectedUser } = useContext(StoreContext);
 
   const [otpVerified, setOtpverified] = useState(false);
   const [token, setToken] = useState(() => localStorage.getItem("token"));
@@ -145,6 +145,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (response.data.success) {
+
         return response.data;
       } else {
         toast.error(response.data.message || "Failed to fetch messages");
@@ -196,41 +197,58 @@ export const AuthProvider = ({ children }) => {
   };
 
   const verifyOtp = async (email, otp) => {
-  try {
-    const response = await axios.post("api/user/verify-otp", { otp, email });
+    try {
+      const response = await axios.post("api/user/verify-otp", { otp, email });
 
-    if (response.data.success) {
-       setOtpverified(true);
-      return response.data; 
-    } else {
-      toast.error(response.data.message);
+      if (response.data.success) {
+        setOtpverified(true);
+        return response.data;
+      } else {
+        toast.error(response.data.message);
+        return null;
+      }
+
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
       return null;
     }
+  };
 
-  } catch (error) {
-    toast.error(error.response?.data?.message || error.message);
-    return null;
-  }
-};
+  const Resetpassword = async (password, email) => {
+    try {
+      const response = await axios.post("/api/user/reset-password", {
+        password,
+        email
+      });
 
-const Resetpassword = async (password, email) => {
-  try {
-    const response = await axios.post("/api/user/reset-password", {
-      password,
-      email
-    });
-
-    if (response.data.success) {
-      return response.data;
-    } else {
-      toast.error(response.data.message || "Password is not updated");
+      if (response.data.success) {
+        return response.data;
+      } else {
+        toast.error(response.data.message || "Password is not updated");
+        return null;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
       return null;
     }
-  } catch (error) {
-    toast.error(error.response?.data?.message || error.message);
-    return null;
-  }
-};
+  };
+  useEffect(() => {
+    if (!selectedUser) return;
+    let ignore = false;
+
+    (async () => {
+      const res = await getMessages(user._id, selectedUser._id);
+      if (!ignore && res?.messages) {
+        const media = res.messages.filter(it => it.attachments != null);
+        setUserMedia(media);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+  }, [selectedUser]);
+
 
   const value = {
     user,

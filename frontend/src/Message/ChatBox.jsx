@@ -2,9 +2,11 @@ import './ChatBox.css';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useSocket } from '../store/Socket';
 import { AuthContext } from '../store/AuthContext';
+import { StoreContext } from '../store/StoreContext';
 
 function ChatBox({ user }) {
   const { getMessages, sendMessages } = useContext(AuthContext);
+  const { usermedia, setUserMedia,selectedUser } = useContext(StoreContext);
   const socket = useSocket();
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
@@ -39,6 +41,8 @@ function ChatBox({ user }) {
     };
     init();
   }, [user, userId, getMessages]);
+
+
 
   useEffect(() => {
     if (!socket.current) return;
