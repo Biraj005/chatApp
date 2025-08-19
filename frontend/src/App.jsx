@@ -12,8 +12,6 @@ import ForgetPassword from "./pages/Resetpassword/ForgetPassword";
 function App() {
 
   const {userLoggedIn} = useContext(AuthContext);
-
-
   return (
     <div>
       <Toaster />
@@ -21,7 +19,7 @@ function App() {
         <Route path="/" element={userLoggedIn ?<Homepage />:<Navigate to='/Login'/> } />
         <Route path="/login" element={<LoginPage /> } />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/update" element={userLoggedIn ?<UpdatePage />:<Navigate to='/Login'/>} />
+        <Route path="/update" element={userLoggedIn ?<UpdatePage />:<Navigate to='/login'/>} />
         <Route path="/forgotpassword" element={<ForgetPassword/>}/>
         <Route path="*" element={<Navigate to={"/"} />} />
       </Routes>

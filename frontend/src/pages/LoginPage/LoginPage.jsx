@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import './LoginPage.css';
 import {  AuthContext } from '../../store/AuthContext';
 import toast from 'react-hot-toast'; 
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
   const [login, setLogin] = useState(true); 
@@ -11,6 +12,7 @@ function LoginPage() {
   const [profilePic, setProfilePic] = useState(null);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate  = useNavigate()
 
   
 const { loginSignUp } = useContext( AuthContext); 
@@ -84,7 +86,7 @@ const onSubmitHandler = (event) => {
         >
           {login ? 'Signup here' : 'Login here'}
         </button>
-        {login && ( <button type="button" className="text-btn">
+        {login && ( <button onClick={()=>navigate("/forgotpassword")} type="button" className="text-btn">
           Forgot password?
         </button>)}
       </div>

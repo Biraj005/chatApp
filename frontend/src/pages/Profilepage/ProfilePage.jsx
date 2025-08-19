@@ -4,7 +4,7 @@ import { AuthContext } from "../../store/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
-  const { user } = useContext(AuthContext);
+  const { user ,Logout} = useContext(AuthContext);
   const navigate = useNavigate()
 
   return (
@@ -18,6 +18,7 @@ function ProfilePage() {
         </p>
         <div className="bio-box">{user.bio}</div>
         <button onClick={()=>navigate("/update")} className="update-button">Update Profile</button>
+        <button onClick={()=>Logout()} className="update-button logout-button">Logout</button>
       </div>
     </div>
   );

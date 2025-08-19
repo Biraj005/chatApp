@@ -70,3 +70,42 @@
   transform: scale(1.05);
   opacity: 0.85;
 }
+.media-item {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-item img,
+.media-item .load-btn {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+/* Button to load media */
+.load-btn {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px; /* Match the image's border-radius */
+
+  background-color: #007aff; /* A standard blue */
+  color: white;
+  border: none;
+  
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  transition: background-color 0.2s ease;
+}
+
+.load-btn:hover {
+  background-color: #0056b3; /* A darker blue on hover */
+}

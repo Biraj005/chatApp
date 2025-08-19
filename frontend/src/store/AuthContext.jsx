@@ -3,7 +3,7 @@ import { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "./StoreContext";
-
+import { useCallback } from "react";
 export const AuthContext = createContext(null);
 
 const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }) => {
   }, [token, user, userId]);
 
   const getUsers = async () => {
+    console.log("get user")
     try {
       const response = await axios.get("api/user/users", {
         headers: {
@@ -131,32 +132,33 @@ export const AuthProvider = ({ children }) => {
       return error.response?.data;
     }
   };
-  const getMessages = async (from, to) => {
-    try {
-      console.log(from, to)
-      const response = await axios.get("/api/message/getmessages", {
-        params: {
-          from: from,
-          to: to,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  // In AuthContext.js
 
-      if (response.data.success) {
+const getMessages = useCallback(async (from, to) => {
+  console.log("get messages")
+  try {
+    const response = await axios.get("/api/message/getmessages", {
+      params: {
+        from: from,
+        to: to,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-        return response.data;
-      } else {
-        toast.error(response.data.message || "Failed to fetch messages");
-        return null;
-      }
-    } catch (error) {
-      toast.error("Error while fetching messages");
-      console.error(error.message);
-      return [];
+    if (response.data.success) {
+      return response.data;
+    } else {
+      toast.error(response.data.message || "Failed to fetch messages");
+      return null;
     }
-  };
+  } catch (error) {
+    toast.error("Error while fetching messages");
+    console.error(error.message);
+    return [];
+  }
+}, [token]); // Add `token` as a dependency
   const sendMessages = async (data) => {
     console.log(data)
     try {

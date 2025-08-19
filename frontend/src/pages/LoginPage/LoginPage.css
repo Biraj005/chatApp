@@ -1,4 +1,4 @@
-/* Background container */
+
 .login-page {
   height: 100vh;
   width: 100%;
@@ -10,7 +10,6 @@
   box-sizing: border-box;
 }
 
-/* Form container */
 .login-container {
   width: 100%;
   max-width: 400px;

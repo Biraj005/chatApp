@@ -6,7 +6,7 @@ import { StoreContext } from '../store/StoreContext';
 
 function ChatBox({ user }) {
   const { getMessages, sendMessages } = useContext(AuthContext);
-  const { usermedia, setUserMedia,selectedUser } = useContext(StoreContext);
+  const { selectedUser } = useContext(StoreContext);
   const socket = useSocket();
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
@@ -14,7 +14,6 @@ function ChatBox({ user }) {
   const { userId } = useContext(AuthContext);
   const bottomRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     const init = async () => {
       if (!userId || !user?._id) return;
@@ -25,9 +24,14 @@ function ChatBox({ user }) {
           setConversation(
             data.messages.map(msg => ({
               text: msg.text,
-              image: msg.attachments || null,
+              image: msg.attachments
+                ? { url: msg.attachments, loaded: false }
+                : null,
               id: msg.id || msg.sender || msg.from,
-              timestamp: new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              timestamp: new Date(msg.createdAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
             }))
           );
         } else {
@@ -42,17 +46,24 @@ function ChatBox({ user }) {
     init();
   }, [user, userId, getMessages]);
 
-
-
+ 
   useEffect(() => {
     if (!socket.current) return;
     const handleIncomingMessage = (data) => {
-      setConversation(prev => [...prev, {
-        text: data.text,
-        image: data.attachments || null,
-        id: data.id || data.sender || data.from,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+      setConversation(prev => [
+        ...prev,
+        {
+          text: data.text,
+          image: data.attachments
+            ? { url: data.attachments, loaded: false }
+            : null,
+          id: data.id || data.sender || data.from,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        },
+      ]);
     };
     socket.current.on('receive-message', handleIncomingMessage);
     return () => {
@@ -62,6 +73,17 @@ function ChatBox({ user }) {
     };
   }, [socket]);
 
+
+  const handleLoadImage = (index) => {
+    setConversation(prev => {
+      const newConv = [...prev];
+      if (newConv[index].image) {
+        newConv[index].image.loaded = true;
+      }
+      return newConv;
+    });
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -69,19 +91,26 @@ function ChatBox({ user }) {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim() && !image) return;
 
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timestamp = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
     const tempImageURL = image ? URL.createObjectURL(image) : null;
 
-    setConversation(prev => [...prev, {
-      text: message,
-      image: tempImageURL,
-      id: userId,
-      timestamp
-    }]);
+    setConversation(prev => [
+      ...prev,
+      {
+        text: message,
+        image: image ? { url: tempImageURL, loaded: false, isLocal: true } : null,
+        id: userId,
+        timestamp,
+      },
+    ]);
 
     const formData = new FormData();
     formData.append("from", userId);
@@ -94,7 +123,7 @@ function ChatBox({ user }) {
         to: user._id,
         from: userId,
         text: message,
-        image: null
+        image: null,
       });
     }
 
@@ -113,7 +142,9 @@ function ChatBox({ user }) {
         <img src={user.profilePic || "/Chatrix.png"} alt="User" />
         <div className="name">
           <h2>{user.name}</h2>
-          <p className={`top-online ${user.isOnline ? "online" : ""}`}>{user.isOnline ? "online" : "offline"}</p>
+          <p className={`top-online ${user.isOnline ? "online" : ""}`}>
+            {user.isOnline ? "online" : "offline"}
+          </p>
         </div>
       </div>
 
@@ -131,7 +162,33 @@ function ChatBox({ user }) {
               >
                 <div className="messages">
                   {item.text && <p>{item.text}</p>}
-                  {item.image && <img src={item.image} alt="attachment" className="chat-image" />}
+
+                  {item.image && !item.image.loaded && (
+                    <button
+                      onClick={() => handleLoadImage(index)}
+                      className="load-btn"
+                    >
+                      Load Image
+                    </button>
+                  )}
+
+                  {item.image && item.image.loaded && (
+                    <div className="image-container">
+                      <img
+                        src={item.image.url}
+                        alt="attachment"
+                        className="chat-image"
+                      />
+                      <a
+                        href={item.image.url}
+                        download
+                        className="download-btn"
+                      >
+                        Download
+                      </a>
+                    </div>
+                  )}
+
                   <span className="timestamp">{item.timestamp}</span>
                 </div>
               </li>
@@ -140,8 +197,6 @@ function ChatBox({ user }) {
           </>
         )}
       </ul>
-
-      {/* Image Preview before sending */}
       {image && (
         <div className="image-preview">
           <img src={URL.createObjectURL(image)} alt="preview" />
@@ -157,7 +212,9 @@ function ChatBox({ user }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder='Send message...'
-            onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSubmit(e)}
+            onKeyPress={(e) =>
+              e.key === 'Enter' && !e.shiftKey && handleSubmit(e)
+            }
           />
           <label htmlFor="file-input" className="file-input-label">
             <span className="material-symbols-outlined">perm_media</span>
