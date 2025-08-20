@@ -13,7 +13,7 @@ function Homepage() {
 
   useEffect(() => {
     if (userId && !socket.current) {
-      socket.current = io("http://localhost:3000");
+      socket.current = io(import.meta.env.VITE_BACKEND_UR);
 
       socket.current.on("connect", () => {
   
