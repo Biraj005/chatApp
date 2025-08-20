@@ -19,7 +19,6 @@ const handleSubmit = async (e) => {
   if (profilePic) {
     formData.append('profilePic', profilePic); 
   }
-  console.log(formData);
 
   updateUser(formData);
 };
@@ -31,7 +30,7 @@ const handleSubmit = async (e) => {
 
         <input
           type="text"
-          required
+         
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -39,7 +38,7 @@ const handleSubmit = async (e) => {
 
         <input
           type="text"
-          required
+        
           placeholder="Bio"
           value={bio}
           onChange={(e) => setBio(e.target.value)}

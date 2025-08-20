@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [userLoggedIn, setUserLoggedIn] = useState(!!token && !!user);
 
   useEffect(() => {
-    console.log(userId);
+
     if (token && user) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       localStorage.setItem("token", token);
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   }, [token, user, userId]);
 
   const getUsers = async () => {
-    console.log("get user")
+
     try {
       const response = await axios.get("api/user/users", {
         headers: {
@@ -46,7 +46,6 @@ export const AuthProvider = ({ children }) => {
         },
       });
 
-      console.log(response.data);
       setUsers(response.data.users);
     } catch (error) {
       console.error(error.message);
@@ -118,7 +117,7 @@ export const AuthProvider = ({ children }) => {
         },
       });
 
-      console.log(response);
+      
 
       if (response.data.success) {
         setUser(response.data.user);
@@ -127,40 +126,46 @@ export const AuthProvider = ({ children }) => {
 
       return response.data;
     } catch (error) {
-      console.error(error.message);
+      Chatrix.error(error.message);
       toast.error("Update failed");
       return error.response?.data;
     }
   };
-  // In AuthContext.js
+  const getMessages = useCallback(async (from, to) => {
+   
+    try {
+      const response = await axios.get("/api/message/getmessages", {
+        params: { from, to },
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-const getMessages = useCallback(async (from, to) => {
-  console.log("get messages")
-  try {
-    const response = await axios.get("/api/message/getmessages", {
-      params: {
-        from: from,
-        to: to,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      if (response.data.success) {
+        // --- NEW LOGIC ADDED HERE ---
+        // If messages are returned, filter for media and update the state.
+        if (response.data.messages) {
+          const media = response.data.messages.filter(msg => msg.attachments != null);
+          setUserMedia(media);
+        } else {
+          setUserMedia([]); // Ensure media is cleared if there are no messages
+        }
+        // --- END OF NEW LOGIC ---
 
-    if (response.data.success) {
-      return response.data;
-    } else {
-      toast.error(response.data.message || "Failed to fetch messages");
-      return null;
+        return response.data;
+
+      } else {
+        toast.error(response.data.message || "Failed to fetch messages");
+        setUserMedia([]); // Also clear media on a failed request
+        return null;
+      }
+    } catch (error) {
+      toast.error("Error while fetching messages");
+      console.error(error.message);
+      setUserMedia([]); // Also clear media on an error
+      return null; // Return null for consistency
     }
-  } catch (error) {
-    toast.error("Error while fetching messages");
-    console.error(error.message);
-    return [];
-  }
-}, [token]); // Add `token` as a dependency
+  }, [token, setUserMedia]); // <-- Add setUserMedia to the dependency array
   const sendMessages = async (data) => {
-    console.log(data)
+    
     try {
       const response = await axios.post("/api/message/send", data, {
         headers: {

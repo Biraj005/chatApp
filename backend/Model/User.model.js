@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema(
 
     profilePic: {
       type: String,
-      default: "/Chatrix.png",
+      default: "/noprofile.png",
     },
 
     bio: {

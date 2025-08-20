@@ -240,9 +240,6 @@
   background: rgba(255, 0, 0, 1);
 }
 
-.online{
-  color: rgb(131, 197, 165);
-}
 
 
 .load-btn, .download-btn {
@@ -283,4 +280,8 @@
   flex-direction: column;
   gap: 6px;
   align-items: flex-start;
+}
+
+.top-online.online {
+  color: rgb(19, 159, 19);
 }

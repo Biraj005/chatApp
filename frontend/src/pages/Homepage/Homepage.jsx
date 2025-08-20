@@ -16,7 +16,7 @@ function Homepage() {
       socket.current = io("http://localhost:3000");
 
       socket.current.on("connect", () => {
-        console.log("Connected to socket:", socket.current.id);
+  
         socket.current.emit("join", userId);
       });
     }

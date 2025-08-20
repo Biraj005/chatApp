@@ -9,7 +9,7 @@ import fs from "fs";
 export const Signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    console.log("Signup controller", name);
+   
 
     if (!name || !email || !password) {
       return res.json({ success: false, message: "All fields are required" });
@@ -40,7 +40,7 @@ export const Signup = async (req, res) => {
     });
 
     await newUser.save();
-    console.log(newUser);
+ 
 
     const token = getToken(newUser._id);
 
@@ -65,7 +65,7 @@ export const Signup = async (req, res) => {
 export const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("Login controller", email);
+
 
     if (!email || !password) {
       return res.status(400).json({
@@ -117,34 +117,40 @@ export const Update = async (req, res) => {
     const { name, bio } = req.body;
 
     let profilePicUrl;
-
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pics",
       });
       profilePicUrl = result.secure_url;
-      fs.unlinkSync(req.file.path);
+      fs.unlinkSync(req.file.path); 
     }
+    if (!profilePicUrl && !name && !bio) {
+      return res.json({
+        success: true,
+        message: "No data provided to update",
+      });
+    }
+    const newData = {};
+    if (profilePicUrl) newData.profilePicUrl = profilePicUrl;
+    if (bio) newData.bio = bio;
+    if (name) newData.name = name;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      {
-        name,
-        bio,
-        ...(profilePicUrl && { profilePic: profilePicUrl }),
-      },
+      { $set: newData }, 
       { new: true }
     ).select("-password");
 
     return res.json({
       success: true,
       message: "User data updated",
-      user: updatedUser,
+      user: updatedUser, 
     });
   } catch (err) {
     return res.json({ success: false, message: err.message });
   }
 };
+
 
 export const Logout = async (req, res) => {
   try {
@@ -171,7 +177,7 @@ export const getUser = async (req, res) => {
 };
 export const forgetPassword = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
+
 
   const user = await User.findOne({ email });
 

@@ -29,7 +29,7 @@ export const getMessages = async (req, res) => {
 export const sendMessages = async (req, res) => {
   try {
     const { from, to, text } = req.body;
-    console.log(from, to, text);
+ 
 
     let conversation = await conversationModel.findOne({
       participants: { $all: [from, to] },
@@ -43,7 +43,6 @@ export const sendMessages = async (req, res) => {
 
     let attachmentsUrl = null;
     if (req.file) {
-      console.log("Uploading file to Cloudinary...");
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "chat_files",
       });
@@ -64,7 +63,7 @@ export const sendMessages = async (req, res) => {
 
     res.json({ success: true, message: newMessage });
   } catch (error) {
-    console.log(error.message);
+
     res.status(500).json({ success: false, message: error.message });
   }
 };

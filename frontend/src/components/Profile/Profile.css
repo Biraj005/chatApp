@@ -3,6 +3,7 @@
   flex-direction: column;
   background-color: #252526;
   height: 100%;
+    border-radius: 10px;
 }
 .top-profile {
   display: flex;
@@ -107,5 +108,32 @@
 }
 
 .load-btn:hover {
-  background-color: #0056b3; /* A darker blue on hover */
+  background-color: #0056b3; 
+}
+.no-media {
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 15px 0;
+}
+
+/* Smooth scrollbar (optional for dark UI) */
+.shared-media::-webkit-scrollbar {
+  width: 6px;
+}
+.shared-media::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 3px;
+}
+.shared-media::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.load-btn {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.load-btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }

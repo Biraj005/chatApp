@@ -46,7 +46,7 @@ function ChatBox({ user }) {
     init();
   }, [user, userId, getMessages]);
 
- 
+
   useEffect(() => {
     if (!socket.current) return;
     const handleIncomingMessage = (data) => {
@@ -117,6 +117,7 @@ function ChatBox({ user }) {
     formData.append("to", user._id);
     formData.append("text", message || "");
     if (image) formData.append("image", image);
+    
 
     if (socket.current) {
       socket.current.emit('send-message', {
@@ -142,7 +143,7 @@ function ChatBox({ user }) {
         <img src={user.profilePic || "/Chatrix.png"} alt="User" />
         <div className="name">
           <h2>{user.name}</h2>
-          <p className={`top-online ${user.isOnline ? "online" : ""}`}>
+          <p className={`top-online ${user.isOnline ? "online" : "offline"}`}>
             {user.isOnline ? "online" : "offline"}
           </p>
         </div>
