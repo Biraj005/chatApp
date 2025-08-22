@@ -17,6 +17,9 @@ function ChatBox({ user }) {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 890);
 
+  // 🆕 state to track image loading per message
+  const [mapLoading, setMapLoading] = useState({});
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 890);
     window.addEventListener("resize", handleResize);
@@ -32,18 +35,27 @@ function ChatBox({ user }) {
         const data = await getMessages(userId, user._id);
         if (data?.success && data.messages) {
           setConversation(
-            data.messages.map(msg => ({
-              text: msg.text,
-              image: msg.attachments
-                ? { url: msg.attachments, loaded: false }
-                : null,
-              id: msg.id || msg.sender || msg.from,
-              timestamp: new Date(msg.createdAt).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              }),
-            }))
+            data.messages.map((msg, i) => {
+              const id = msg.id || msg.sender || msg.from || i;
+              return {
+                text: msg.text,
+                image: msg.attachments ? { url: msg.attachments } : null,
+                id,
+                timestamp: new Date(msg.createdAt).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                }),
+              };
+            })
           );
+
+          // initialize mapLoading for new messages with image
+          const initialLoading = {};
+          data.messages.forEach((msg, i) => {
+            const id = msg.id || msg.sender || msg.from || i;
+            if (msg.attachments) initialLoading[id] = false; // not loaded yet
+          });
+          setMapLoading(initialLoading);
         } else {
           setConversation([]);
         }
@@ -60,20 +72,22 @@ function ChatBox({ user }) {
   useEffect(() => {
     if (!socket.current) return;
     const handleIncomingMessage = (data) => {
+      const id = data.id || data.sender || data.from || Date.now();
       setConversation(prev => [
         ...prev,
         {
           text: data.text,
-          image: data.attachments
-            ? { url: data.attachments, loaded: false }
-            : null,
-          id: data.id || data.sender || data.from,
+          image: data.attachments ? { url: data.attachments } : null,
+          id,
           timestamp: new Date().toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           }),
         },
       ]);
+      if (data.attachments) {
+        setMapLoading(prev => ({ ...prev, [id]: false }));
+      }
     };
     socket.current.on('receive-message', handleIncomingMessage);
     return () => {
@@ -92,16 +106,21 @@ function ChatBox({ user }) {
       minute: '2-digit',
     });
     const tempImageURL = image ? URL.createObjectURL(image) : null;
+    const tempId = Date.now();
 
     setConversation(prev => [
       ...prev,
       {
         text: message,
-        image: image ? { url: tempImageURL, loaded: false, isLocal: true } : null,
+        image: image ? { url: tempImageURL, isLocal: true } : null,
         id: userId,
         timestamp,
       },
     ]);
+
+    if (image) {
+      setMapLoading(prev => ({ ...prev, [tempId]: true })); // local images load instantly
+    }
 
     const formData = new FormData();
     formData.append("from", userId);
@@ -127,11 +146,15 @@ function ChatBox({ user }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 
+  const handleLoadImage = (id) => {
+    setMapLoading(prev => ({ ...prev, [id]: true }));
+  };
+
   return (
     <div className='chat-box'>
       <div className="top">
         {isMobile && (
-          <button 
+          <button
             className="back-btn"
             onClick={() => setSelectedUser('none')}
           >
@@ -161,22 +184,35 @@ function ChatBox({ user }) {
               >
                 <div className="messages">
                   {item.text && <p>{item.text}</p>}
-                  {item.image && item.image.loaded && (
+
+                  {item.image && (
                     <div className="image-container">
-                      <img
-                        src={item.image.url}
-                        alt="attachment"
-                        className="chat-image"
-                      />
-                      <a
-                        href={item.image.url}
-                        download
-                        className="download-btn"
-                      >
-                        Download
-                      </a>
+                      {!mapLoading[item.id] ? (
+                        <button
+                          className="load-btn"
+                          onClick={() => handleLoadImage(item.id)}
+                        >
+                          Load Image
+                        </button>
+                      ) : (
+                        <>
+                          <img
+                            src={item.image.url}
+                            alt="attachment"
+                            className="chat-image"
+                          />
+                          <a
+                            href={item.image.url}
+                            download
+                            className="download-btn"
+                          >
+                            Download
+                          </a>
+                        </>
+                      )}
                     </div>
                   )}
+
                   <span className="timestamp">{item.timestamp}</span>
                 </div>
               </li>

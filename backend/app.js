@@ -14,9 +14,11 @@ const PORT = process.env.PORT || 3000;
 const io = new Server(server, {
   cors: {
     origin: [process.env.FRONTEND_URL],
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    credentials: true,   
   }
 });
+
 const users = new Map(); 
 io.on('connection', (socket) => {
 //  console.log(' User connected:', socket.id);

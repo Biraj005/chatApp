@@ -15,7 +15,10 @@ function Homepage() {
   
   useEffect(() => {
     if (userId && !socket.current) {
-      socket.current = io(import.meta.env.VITE_BACKEND_URL);
+     socket.current = io(import.meta.env.VITE_BACKEND_URL, {
+      withCredentials: true, 
+      transports: ["websocket", "polling"], 
+    });
 
       socket.current.on("connect", () => {
         socket.current.emit("join", userId);
