@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { type } from "os";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -8,29 +7,24 @@ const UserSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
     },
-
     password: {
       type: String,
       required: true,
     },
-
     profilePic: {
       type: String,
       default: "/noprofile.png",
     },
-
     bio: {
       type: String,
       default: "",
     },
-
     isOnline: {
       type: Boolean,
       default: false,
@@ -44,7 +38,6 @@ const UserSchema = new mongoose.Schema(
       default: null,
     },
   },
-
   {
     timestamps: true,
   }

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 function ChatContainer() {
   const { Logout, getUsers } = useContext(AuthContext);
-  const { users,setSelectedUser } = useContext(StoreContext);
+  const { users,setSelectedUser,selectedUser } = useContext(StoreContext);
   const [query, setQuery] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const navigate = useNavigate()

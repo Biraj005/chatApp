@@ -10,7 +10,7 @@ function ProfilePage() {
   return (
     <div className="profile-page">
       <div className="profile-box">
-        <img src={user.profilePic} alt="Profile" className="profile-pic" />
+        <img src={user.profilePic || "/noprofile.png"} alt="Profile" className="profile-pic" />
         <h2 className="profile-name">{user.name}</h2>
         <p className="profile-email">{user.email}</p>
         <p className={`status ${user.isOnline ? "online" : "offline"}`}>

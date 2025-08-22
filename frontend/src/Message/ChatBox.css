@@ -11,6 +11,7 @@
   background-color: #1c1e21; 
   border-left: 1px solid #333;
   border-right: 1px solid #333;
+  border-radius: 15px;
 }
 
 
@@ -21,6 +22,7 @@
   gap: 15px;
   border-bottom: 1px solid #333;
   background-color: #2a2a2a;
+    border-radius: 15px;
 }
 
 .top img {
@@ -284,4 +286,30 @@
 
 .top-online.online {
   color: rgb(19, 159, 19);
+}
+@media (max-width:890px) {
+  .chat-box{
+    width: 100%;
+  }
+  
+}
+.back-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  margin-right: 10px;
+  cursor: pointer;
+  color: white;
+}
+.back-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  margin-right: 10px;
+  cursor: pointer;
+  color: white;
+}
+
+.back-btn:hover {
+  color: #ddd;
 }

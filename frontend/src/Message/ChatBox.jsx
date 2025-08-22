@@ -6,7 +6,7 @@ import { StoreContext } from '../store/StoreContext';
 
 function ChatBox({ user }) {
   const { getMessages, sendMessages } = useContext(AuthContext);
-  const { selectedUser } = useContext(StoreContext);
+  const { selectedUser, setSelectedUser } = useContext(StoreContext);
   const socket = useSocket();
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
@@ -14,6 +14,16 @@ function ChatBox({ user }) {
   const { userId } = useContext(AuthContext);
   const bottomRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 890);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 890);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Fetch messages
   useEffect(() => {
     const init = async () => {
       if (!userId || !user?._id) return;
@@ -46,7 +56,7 @@ function ChatBox({ user }) {
     init();
   }, [user, userId, getMessages]);
 
-
+  // Listen for socket messages
   useEffect(() => {
     if (!socket.current) return;
     const handleIncomingMessage = (data) => {
@@ -73,25 +83,6 @@ function ChatBox({ user }) {
     };
   }, [socket]);
 
-
-  const handleLoadImage = (index) => {
-    setConversation(prev => {
-      const newConv = [...prev];
-      if (newConv[index].image) {
-        newConv[index].image.loaded = true;
-      }
-      return newConv;
-    });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-    }
-  };
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim() && !image) return;
@@ -117,7 +108,6 @@ function ChatBox({ user }) {
     formData.append("to", user._id);
     formData.append("text", message || "");
     if (image) formData.append("image", image);
-    
 
     if (socket.current) {
       socket.current.emit('send-message', {
@@ -140,6 +130,14 @@ function ChatBox({ user }) {
   return (
     <div className='chat-box'>
       <div className="top">
+        {isMobile && (
+          <button 
+            className="back-btn"
+            onClick={() => setSelectedUser('none')}
+          >
+            ←
+          </button>
+        )}
         <img src={user.profilePic || "/Chatrix.png"} alt="User" />
         <div className="name">
           <h2>{user.name}</h2>
@@ -163,16 +161,6 @@ function ChatBox({ user }) {
               >
                 <div className="messages">
                   {item.text && <p>{item.text}</p>}
-
-                  {item.image && !item.image.loaded && (
-                    <button
-                      onClick={() => handleLoadImage(index)}
-                      className="load-btn"
-                    >
-                      Load Image
-                    </button>
-                  )}
-
                   {item.image && item.image.loaded && (
                     <div className="image-container">
                       <img
@@ -189,7 +177,6 @@ function ChatBox({ user }) {
                       </a>
                     </div>
                   )}
-
                   <span className="timestamp">{item.timestamp}</span>
                 </div>
               </li>
@@ -198,6 +185,7 @@ function ChatBox({ user }) {
           </>
         )}
       </ul>
+
       {image && (
         <div className="image-preview">
           <img src={URL.createObjectURL(image)} alt="preview" />
@@ -225,7 +213,7 @@ function ChatBox({ user }) {
             type="file"
             accept="image/*"
             style={{ display: 'none' }}
-            onChange={handleImageChange}
+            onChange={(e) => setImage(e.target.files[0])}
           />
         </div>
         <div className="send">

@@ -1,22 +1,23 @@
-// src/pages/Homepage.jsx
 import { useSocket } from '../../store/Socket';
 import ChatContainer from '../../components/ChatContainer/ChatContainer';
 import Right from '../../components/Right/Right';
 import './Homepage.css';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../store/AuthContext';
 import { io } from 'socket.io-client';
+import { StoreContext } from '../../store/StoreContext';
 
 function Homepage() {
   const socket = useSocket(); 
   const { userId } = useContext(AuthContext);
-
+  const {selectedUser} = useContext(StoreContext)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 890);
+  
   useEffect(() => {
     if (userId && !socket.current) {
-      socket.current = io(import.meta.env.VITE_BACKEND_UR);
+      socket.current = io(import.meta.env.VITE_BACKEND_URL);
 
       socket.current.on("connect", () => {
-  
         socket.current.emit("join", userId);
       });
     }
@@ -29,15 +30,29 @@ function Homepage() {
     };
   }, [userId]);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 890);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div className='home-page'>
+    <div className="home-page">
       <div className="home-container">
-        <div className="home-container-left">
-          <ChatContainer />
-        </div>
-        <div className="home-container-right">
-          <Right />
-        </div>
+        {isMobile ? (
+          
+          selectedUser==='none'? <ChatContainer /> : <Right />
+        ) : (
+      
+          <>
+            <div className="home-container-left">
+              <ChatContainer />
+            </div>
+            <div className="home-container-right">
+              <Right />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
