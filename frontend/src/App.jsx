@@ -16,7 +16,7 @@ function App() {
     <div>
       <Toaster />
       <Routes>
-        <Route path="/" element={userLoggedIn ?<Homepage />:<Navigate to='/Login'/> } />
+        <Route path="/" element={userLoggedIn ?<Homepage />:<Navigate to='/login'/> } />
         <Route path="/login" element={<LoginPage /> } />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/update" element={userLoggedIn ?<UpdatePage />:<Navigate to='/login'/>} />
