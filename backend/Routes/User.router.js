@@ -16,7 +16,6 @@ UserRouter.get("/user/users",protectedRoute,getUser);
 UserRouter.post("/user/forgotpassword",forgetPassword);
 UserRouter.post("/user/verify-otp",verifyotp);
 UserRouter.post("/user/reset-password",resetPassword);
-// UserRouter.post("/send",send);
 
 
 export default UserRouter;
